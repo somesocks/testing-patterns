@@ -1,5 +1,33 @@
 # testing-patterns
 
+```javascript
+
+let ping = require('ping');
+let AssertionTest = require('testing-patterns/AssertionTest');
+
+const pingTest = AssertionTest()
+  .describe('can ping google')
+  .tag('ping', 'network')
+  .prepare(
+    (next) => next(null, 'google.com')
+  )
+  .execute(
+    (next, host) => ping.sys.probe(
+      host,
+      (isAlive, error) => next(error, isAlive)
+    )
+  )
+  .verify(
+    AssertionTest.VerifyErrorWasNotThrown,
+    (next, context) => next(null, context.result === true)
+  )
+  .build();
+
+ test( () => console.log('test done') );
+
+```
+
+
 `testing-patterns` is a collection of utilities to help you build common test patterns.
 
 ## API
