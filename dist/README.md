@@ -2,14 +2,25 @@
 
 ```javascript
 
+
 let ping = require('ping');
+
 let AssertionTest = require('testing-patterns/AssertionTest');
 
-const pingTest = AssertionTest()
-  .describe('can ping google')
+
+const PingTest = AssertionTest()
+  .describe('can ping internet')
   .tag('ping', 'network')
+  .setup(
+    (next) => next(
+      null,
+      {
+        testHosts: [ 'google.com', 'microsoft.com', 'yahoo.com' ],
+      }
+    )
+  )
   .prepare(
-    (next) => next(null, 'google.com')
+    (next, setup) => next(null, setup.testHosts[0])
   )
   .execute(
     (next, host) => ping.sys.probe(
@@ -19,11 +30,16 @@ const pingTest = AssertionTest()
   )
   .verify(
     AssertionTest.VerifyErrorWasNotThrown,
-    (next, context) => next(null, context.result === true)
+    (next, test) => next(null, test.result === true)
+  )
+  .teardown(
+    (next, test) => next()
   )
   .build();
 
+
  test( () => console.log('test done') );
+
 
 ```
 
@@ -76,26 +92,34 @@ const pingTest = AssertionTest()
 #### new AssertionTest()
 ```javascript
 
-let ping = require('ping');
-let AssertionTest = require('testing-patterns/AssertionTest');
-
-const pingTest = AssertionTest()
-  .describe('can ping google')
-  .tag('ping', 'network')
-  .prepare(
-    (next) => next(null, 'google.com')
-  )
-  .execute(
-    (next, host) => ping.sys.probe(
-      host,
-      (isAlive, error) => next(error, isAlive)
-    )
-  )
-  .verify(
-    AssertionTest.VerifyErrorWasNotThrown,
-    (next, context) => next(null, context.result === true)
-  )
-  .build();
+const PingTest = AssertionTest()
+  .describe('can ping internet')
+	.tag('ping', 'network')
+	.setup(
+		(next) => next(
+			null,
+			{
+				testHosts: [ 'google.com', 'microsoft.com', 'yahoo.com' ],
+			}
+		)
+	)
+	.prepare(
+		(next, setup) => next(null, setup.testHosts[0])
+	)
+	.execute(
+		(next, host) => ping.sys.probe(
+			host,
+			(isAlive, error) => next(error, isAlive)
+		)
+	)
+	.verify(
+		AssertionTest.VerifyErrorWasNotThrown,
+		(next, test) => next(null, test.result === true)
+	)
+	.teardown(
+		(next, test) => next()
+	)
+	.build();
 
  test( () => console.log('test done') );
 

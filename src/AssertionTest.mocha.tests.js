@@ -61,10 +61,18 @@ const SampleTest = AssertionTest()
 	.build();
 
 const PingTest = AssertionTest()
-	.describe('can ping google')
+	.describe('can ping internet')
 	.tag('ping', 'network')
+	.setup(
+		(next) => next(
+			null,
+			{
+				testHosts: [ 'google.com', 'microsoft.com', 'yahoo.com' ],
+			}
+		)
+	)
 	.prepare(
-		(next) => next(null, 'google.com')
+		(next, setup) => next(null, setup.testHosts[0])
 	)
 	.execute(
 		(next, host) => ping.sys.probe(
