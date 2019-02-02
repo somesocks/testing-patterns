@@ -59,7 +59,7 @@ var DEFAULT_TEARDOWN = function (next, context) {
 * 	.teardown(
 * 		(next, test) => next()
 * 	)
-* 	.build();
+*   .build();
 *
 *  test( () => console.log('test done') );
 *
