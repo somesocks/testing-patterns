@@ -1,22 +1,6 @@
-# callback-patterns
+# testing-patterns
 
-`callback-patterns` is a collection of design patterns for callback-driven async code.  The design patterns in this library are constructors that build callback-expecting functions.  Each pattern is designed to be a stand-alone piece of code, tested for performance and robustness.
-
-## Design
-
-There is one major difference between this package and many other callback-driven async libraries: **the callback comes first**.
-
-```javascript
-
-// this
-function task(callback, arg1, arg2, ...) { }
-
-// not this
-function task(arg1, arg2, ..., callback) { }
-
-```
-
-This makes it easier to compose callback-driven functions in useful ways, with almost no boilerplate code.
+`testing-patterns` is a collection of utilities to help you build common test patterns.
 
 ## API
 
@@ -88,7 +72,7 @@ const pingTest = AssertionTest()
  test( () => console.log('test done') );
 
 ```
-Builds an async assertion task.  When called,
+Constructor for an AssertionTest builder.
 
 
 * * *

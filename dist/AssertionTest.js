@@ -56,7 +56,7 @@ var DEFAULT_TEARDOWN = function (next, context) {
 *  test( () => console.log('test done') );
 *
 * ```
-* Builds an async assertion task.  When called,
+* Constructor for an AssertionTest builder.
 *
 * @name AssertionTest
 * @class
