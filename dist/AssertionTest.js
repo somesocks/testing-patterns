@@ -27,38 +27,37 @@ var DEFAULT_TEARDOWN = function (next, context) {
 };
 
 
-
 /**
 *
 * ```javascript
 *
 * const PingTest = AssertionTest()
 *   .describe('can ping internet')
-* 	.tag('ping', 'network')
-* 	.setup(
-* 		(next) => next(
-* 			null,
-* 			{
-* 				testHosts: [ 'google.com', 'microsoft.com', 'yahoo.com' ],
-* 			}
-* 		)
-* 	)
-* 	.prepare(
-* 		(next, setup) => next(null, setup.testHosts[0])
-* 	)
-* 	.execute(
-* 		(next, host) => ping.sys.probe(
-* 			host,
-* 			(isAlive, error) => next(error, isAlive)
-* 		)
-* 	)
-* 	.verify(
-* 		AssertionTest.VerifyErrorWasNotThrown,
-* 		(next, test) => next(null, test.result === true)
-* 	)
-* 	.teardown(
-* 		(next, test) => next()
-* 	)
+*   .tag('ping', 'network')
+*   .setup(
+*     (next) => next(
+*       null,
+*       {
+*         testHosts: [ 'google.com', 'microsoft.com', 'yahoo.com' ],
+*       }
+*     )
+*   )
+*   .prepare(
+*     (next, setup) => next(null, setup.testHosts[0])
+*   )
+*   .execute(
+*     (next, host) => ping.sys.probe(
+*       host,
+*       (isAlive, error) => next(error, isAlive)
+*     )
+*   )
+*   .verify(
+*     AssertionTest.VerifyErrorWasNotThrown,
+*     (next, test) => next(null, test.result === true)
+*   )
+*   .teardown(
+*     (next, test) => next()
+*   )
 *   .build();
 *
 *  test( () => console.log('test done') );
