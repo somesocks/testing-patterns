@@ -12,15 +12,19 @@ const PingTest = AssertionTest()
   .describe('can ping internet')
   .tag('ping', 'network')
   .setup(
-    (next) => next(
-      null,
-      {
-        testHosts: [ 'google.com', 'microsoft.com', 'yahoo.com' ],
-      }
-    )
+    // build our setup
+    (next) => {
+      const setup = {};
+      setup.testHosts = [ 'google.com', 'microsoft.com', 'yahoo.com' ];
+      next(null, setup);
+    }
   )
   .prepare(
-    (next, setup) => next(null, setup.testHosts[0])
+    // run test with first host
+    (next, setup) => {
+      const host = setup.testHosts[0];
+      next(null, host);
+    }
   )
   .execute(
     (next, host) => ping.sys.probe(
@@ -29,16 +33,19 @@ const PingTest = AssertionTest()
     )
   )
   .verify(
-    AssertionTest.VerifyErrorWasNotThrown,
+    // verify no error was thrown
+    (next, { setup, request, result, error }) => next(error),
+    // verify result is true
     (next, { setup, request, result, error }) => next(null, result === true)
   )
   .teardown(
+    // nothing to teardown
     (next, { setup, request, result, error }) => next()
   )
   .build();
 
 
- test( () => console.log('test done') );
+ test( (error) => console.log('test done') );
 
 
 ```
@@ -96,15 +103,19 @@ const PingTest = AssertionTest()
   .describe('can ping internet')
   .tag('ping', 'network')
   .setup(
-    (next) => next(
-      null,
-      {
-        testHosts: [ 'google.com', 'microsoft.com', 'yahoo.com' ],
-      }
-    )
+    // build our setup
+    (next) => {
+      const setup = {};
+      setup.testHosts = [ 'google.com', 'microsoft.com', 'yahoo.com' ];
+      next(null, setup);
+    }
   )
   .prepare(
-    (next, setup) => next(null, setup.testHosts[0])
+    // run test with first host
+    (next, setup) => {
+      const host = setup.testHosts[0];
+      next(null, host);
+    }
   )
   .execute(
     (next, host) => ping.sys.probe(
@@ -113,15 +124,18 @@ const PingTest = AssertionTest()
     )
   )
   .verify(
-    AssertionTest.VerifyErrorWasNotThrown,
+    // verify no error was thrown
+    (next, { setup, request, result, error }) => next(error),
+    // verify result is true
     (next, { setup, request, result, error }) => next(null, result === true)
   )
   .teardown(
+    // nothing to teardown
     (next, { setup, request, result, error }) => next()
   )
   .build();
 
- test( () => console.log('test done') );
+  test( () => console.log('test done') );
 
 ```
 Constructor for an AssertionTest builder.
