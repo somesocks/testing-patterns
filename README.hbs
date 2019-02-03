@@ -30,10 +30,10 @@ const PingTest = AssertionTest()
   )
   .verify(
     AssertionTest.VerifyErrorWasNotThrown,
-    (next, test) => next(null, test.result === true)
+    (next, { setup, request, result, error }) => next(null, result === true)
   )
   .teardown(
-    (next, test) => next()
+    (next, { setup, request, result, error }) => next()
   )
   .build();
 

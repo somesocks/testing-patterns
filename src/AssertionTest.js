@@ -53,10 +53,10 @@ var DEFAULT_TEARDOWN = function (next, context) {
 *   )
 *   .verify(
 *     AssertionTest.VerifyErrorWasNotThrown,
-*     (next, test) => next(null, test.result === true)
+*     (next, { setup, request, result, error }) => next(null, result === true)
 *   )
 *   .teardown(
-*     (next, test) => next()
+*     (next, { setup, request, result, error }) => next()
 *   )
 *   .build();
 *
@@ -73,7 +73,8 @@ var DEFAULT_TEARDOWN = function (next, context) {
 function AssertionTest() {
 	var self = this instanceof AssertionTest ? this : Object.create(AssertionTest.prototype);
 
-	self._label = [ '' ];
+	self._description = '';
+	self._tags = [ 'assertion' ];
 	self._setup = DEFAULT_SETUP;
 	self._prepare = DEFAULT_PREPARE;
 	self._execute = DEFAULT_EXECUTE;
@@ -84,29 +85,42 @@ function AssertionTest() {
 }
 
 /**
+*
+* `AssertionTest#describe` lets you set a description for a test case.
+* This description is part of the label attached to the test case when built.
+*
 * @function describe
 * @param {string} description - a string label describing the test case
 * @returns {AssertionTest} this
 * @memberof testing-patterns.AssertionTest#
 */
 AssertionTest.prototype.describe = function describe(description) {
-	this._label[0] = description;
+	this._description = description;
 	return this;
 };
 
 /**
+*
+* `AssertionTest#tag` lets you add any number of tags to a test case label.
+* These tags can help select a slice of your test collection to run or analyze.
+*
 * @function tag
 * @param {...string} tags - any number of tags to be appended to the label
 * @returns {AssertionTest} this
 * @memberof testing-patterns.AssertionTest#
 */
 AssertionTest.prototype.tag = function tag() {
-	var tags = arguments;
-	this._label.push.apply(this._label, tags);
+	this._tags = Array.prototype.slice.call(arguments);
 	return this;
 };
 
 /**
+*
+* `AssertionTest#setup` gives you a hook to build test fixtures before execution.
+* This is the first step that runs in a test.
+* `setup` is a separate step from `prepare` because you often want to use
+* a common setup function to build test fixtures for multiple tests.
+*
 * @function setup
 * @param {function} task - a setup task function - should return a setup object
 * @returns {AssertionTest} this
@@ -118,6 +132,11 @@ AssertionTest.prototype.setup = function setup(_setup) {
 };
 
 /**
+*
+* `AssertionTest#prepare` gives you a hook to prepare the request that the test uses to execute.
+* This is the second step that runs in a test, and the last step before `execute`.
+* The `prepare` task is passed the results from `setup`.
+*
 * @function prepare
 * @param {function} task - a prepare task function - should accept a context containing the setup, and return a request object to be given to the executing task
 * @returns {AssertionTest} this
@@ -129,6 +148,10 @@ AssertionTest.prototype.prepare = function prepare(_prepare) {
 };
 
 /**
+*
+* `AssertionTest#execute` lets you specify the task that is executed in a test.
+* The `execute` task is passed the results from `prepare`.
+*
 * @function execute
 * @param {function} task - the task the test should execute, and capture results and errors from
 * @returns {AssertionTest} this
@@ -140,6 +163,11 @@ AssertionTest.prototype.execute = function execute(_execute) {
 };
 
 /**
+*
+* `AssertionTest#verify` lets you specify any number of tasks to verify the test results.
+* Each `verify` task is passed a complete record of all test fixtures in an object,
+* including the setup, the request, the result, and the error (if an error was thrown)
+*
 * @function verify
 * @param {...function} tasks - any number of verification tasks
 * @returns {AssertionTest} this
@@ -152,6 +180,11 @@ AssertionTest.prototype.verify = function verify() {
 };
 
 /**
+*
+* `AssertionTest#teardown` gives you a hook to tear down the test fixtures after execution.
+* The `teardown` task is passed a complete record of all test fixtures in an object,
+* including the setup, the request, the result, and the error (if an error was thrown)
+*
 * @function teardown
 * @param {function} task - a task to tear down the setup
 * @returns {AssertionTest} this
@@ -163,7 +196,9 @@ AssertionTest.prototype.teardown = function teardown(_teardown) {
 };
 
 /**
-* builds the test case function from the builder
+*
+* Builds the test case function.
+*
 * @function build
 * @returns {function} callback-expecting test function
 * @memberof testing-patterns.AssertionTest#
@@ -174,7 +209,8 @@ AssertionTest.prototype.build = function build() {
 	var _execute = this._execute;
 	var _verify = this._verify;
 	var _teardown = this._teardown;
-	var _label = this._label.join(' ');
+	var _tags = this._tags.map(function (tag) { return '#' + tag; }).join(' ');
+	var _label = this._description + '  ' + _tags;
 
 	var _init = function (next, context) {
 		next(null, context || {});

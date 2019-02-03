@@ -30,10 +30,10 @@ const PingTest = AssertionTest()
   )
   .verify(
     AssertionTest.VerifyErrorWasNotThrown,
-    (next, test) => next(null, test.result === true)
+    (next, { setup, request, result, error }) => next(null, result === true)
   )
   .teardown(
-    (next, test) => next()
+    (next, { setup, request, result, error }) => next()
   )
   .build();
 
@@ -114,10 +114,10 @@ const PingTest = AssertionTest()
   )
   .verify(
     AssertionTest.VerifyErrorWasNotThrown,
-    (next, test) => next(null, test.result === true)
+    (next, { setup, request, result, error }) => next(null, result === true)
   )
   .teardown(
-    (next, test) => next()
+    (next, { setup, request, result, error }) => next()
   )
   .build();
 
@@ -132,6 +132,9 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+describe"></a>
 
 #### assertionTest.describe(description) ⇒ <code>AssertionTest</code>
+`AssertionTest#describe` lets you set a description for a test case.
+This description is part of the label attached to the test case when built.
+
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>AssertionTest</code> - this  
 **Params**
@@ -144,6 +147,9 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+tag"></a>
 
 #### assertionTest.tag(...tags) ⇒ <code>AssertionTest</code>
+`AssertionTest#tag` lets you add any number of tags to a test case label.
+These tags can help select a slice of your test collection to run or analyze.
+
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>AssertionTest</code> - this  
 **Params**
@@ -156,6 +162,11 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+setup"></a>
 
 #### assertionTest.setup(task) ⇒ <code>AssertionTest</code>
+`AssertionTest#setup` gives you a hook to build test fixtures before execution.
+This is the first step that runs in a test.
+`setup` is a separate step from `prepare` because you often want to use
+a common setup function to build test fixtures for multiple tests.
+
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>AssertionTest</code> - this  
 **Params**
@@ -168,6 +179,10 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+prepare"></a>
 
 #### assertionTest.prepare(task) ⇒ <code>AssertionTest</code>
+`AssertionTest#prepare` gives you a hook to prepare the request that the test uses to execute.
+This is the second step that runs in a test, and the last step before `execute`.
+The `prepare` task is passed the results from `setup`.
+
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>AssertionTest</code> - this  
 **Params**
@@ -180,6 +195,9 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+execute"></a>
 
 #### assertionTest.execute(task) ⇒ <code>AssertionTest</code>
+`AssertionTest#execute` lets you specify the task that is executed in a test.
+The `execute` task is passed the results from `prepare`.
+
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>AssertionTest</code> - this  
 **Params**
@@ -192,6 +210,10 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+verify"></a>
 
 #### assertionTest.verify(...tasks) ⇒ <code>AssertionTest</code>
+`AssertionTest#verify` lets you specify any number of tasks to verify the test results.
+Each `verify` task is passed a complete record of all test fixtures in an object,
+including the setup, the request, the result, and the error (if an error was thrown)
+
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>AssertionTest</code> - this  
 **Params**
@@ -204,6 +226,10 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+teardown"></a>
 
 #### assertionTest.teardown(task) ⇒ <code>AssertionTest</code>
+`AssertionTest#teardown` gives you a hook to tear down the test fixtures after execution.
+The `teardown` task is passed a complete record of all test fixtures in an object,
+including the setup, the request, the result, and the error (if an error was thrown)
+
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>AssertionTest</code> - this  
 **Params**
@@ -216,7 +242,7 @@ Constructor for an AssertionTest builder.
 <a name="testing-patterns.AssertionTest+build"></a>
 
 #### assertionTest.build() ⇒ <code>function</code>
-builds the test case function from the builder
+Builds the test case function.
 
 **Kind**: instance method of [<code>AssertionTest</code>](#testing-patterns.AssertionTest)  
 **Returns**: <code>function</code> - callback-expecting test function  
