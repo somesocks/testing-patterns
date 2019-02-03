@@ -31,6 +31,7 @@ build-src:
 build-pack: build-src
 	cp ./.npmignore ./dist
 	cp ./package.json ./dist
+	cp ./LICENSE ./dist
 
 build-docs:
 	$(NPM) run cmd-build-docs
