@@ -59,7 +59,9 @@ var DEFAULT_TEARDOWN = function (next, context) {
 *     // verify no error was thrown
 *     (next, { setup, request, result, error }) => next(error),
 *     // verify result is true
-*     (next, { setup, request, result, error }) => next(null, result === true)
+*     (next, { setup, request, result, error }) => next(
+*       result !== true ? new Error(`could not ping host ${request}`) : null
+*     )
 *   )
 *   .teardown(
 *     // nothing to teardown
