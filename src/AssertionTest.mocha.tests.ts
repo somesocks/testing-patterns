@@ -1,20 +1,10 @@
 /* eslint-env mocha */
 
-/* eslint-disable es5/no-destructuring */
-/* eslint-disable es5/no-block-scoping */
-/* eslint-disable es5/no-shorthand-properties */
-/* eslint-disable es5/no-arrow-expression */
-/* eslint-disable es5/no-arrow-functions */
-/* eslint-disable es5/no-rest-parameters */
-/* eslint-disable es5/no-spread */
-/* eslint-disable es5/no-template-literals */
-/* eslint-disable es5/no-es6-methods */
+import Assert from 'callback-patterns/Assert';
 
-const Assert = require('callback-patterns/Assert');
+import ping from 'ping';
 
-const ping = require('ping');
-
-const AssertionTest = require('./AssertionTest');
+import AssertionTest from './AssertionTest';
 
 
 const EmptyTest = AssertionTest()
@@ -24,7 +14,7 @@ const EmptyTest = AssertionTest()
 const SetupTest = AssertionTest()
 	.describe('test with setup works')
 	.setup(
-		(next, context) => next(null, 'setup')
+		(next) => next(null, 'setup')
 	)
 	.verify(
 		(next, context) => next(context.setup === 'setup' ? null : new Error('bad setup'))
@@ -34,7 +24,7 @@ const SetupTest = AssertionTest()
 const SampleTest = AssertionTest()
 	.describe('sample test 1')
 	.setup(
-		(next, context) => next(null, { val: 1 })
+		(next) => next(null, { val: 1 })
 	)
 	.prepare(
 		(next, setup) => next(null, setup.val)
@@ -62,12 +52,13 @@ const SampleTest = AssertionTest()
 
 const PingTest = AssertionTest()
 	.describe('can ping internet')
-	.tag('ping', 'network')
 	.setup(
 		// build our setup
 		(next) => {
-			const setup = {};
-			setup.testHosts = [ 'google.com', 'microsoft.com', 'yahoo.com' ];
+			const setup = {
+				testHosts :  [ 'google.com', 'microsoft.com', 'yahoo.com' ],
+			};
+
 			next(null, setup);
 		}
 	)
@@ -86,15 +77,15 @@ const PingTest = AssertionTest()
 	)
 	.verify(
 		// verify no error was thrown
-		(next, { setup, request, result, error }) => next(error),
+		(next, { error }) => next(error),
 		// verify result is true
-		(next, { setup, request, result, error }) => next(
+		(next, { request, result }) => next(
 			result !== true ? new Error(`could not ping host ${request}`) : null
 		)
 	)
 	.teardown(
 		// nothing to teardown
-		(next, { setup, request, result, error }) => next()
+		(next) => next()
 	)
 	.build();
 
@@ -109,7 +100,7 @@ const TESTS = [
 describe('AssertionTest', () => {
 
 	TESTS.forEach(
-		(test) => it(test.label, test)
+		(test, i) => it(test.label || `test ${i}`, test)
 	);
 
 });
