@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "A collection of test case patterns",
   "main": "./index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git://github.com/somesocks/testing-patterns.git"
@@ -20,6 +19,7 @@
   },
   "homepage": "https://github.com/somesocks/testing-patterns",
   "dependencies": {
+    "async-patterns": "^1.1.0",
     "callback-patterns": "^1.6.2"
   },
   "devDependencies": {

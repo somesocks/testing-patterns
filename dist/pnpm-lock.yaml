@@ -1,4 +1,5 @@
 dependencies:
+  async-patterns: 1.1.0
   callback-patterns: 1.6.2
 devDependencies:
   '@types/mocha': 5.2.7
@@ -6,7 +7,7 @@ devDependencies:
   mocha: 6.1.4
   ping: 0.2.2
   typescript: 3.5.2
-lockfileVersion: 5
+lockfileVersion: 5.1
 packages:
   /@types/mocha/5.2.7:
     dev: true
@@ -54,6 +55,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==
+  /async-patterns/1.1.0:
+    dependencies:
+      callback-patterns: 1.6.2
+    dev: false
+    resolution:
+      integrity: sha512-XZtlvA8/0S+fOVuDYNm9uCQ3LhkxnHf7bgEkxdTdS9kEWDCsVar2tkBGb/n+2UG9xOpKdW1tYwjwbFnyhxRJEw==
   /balanced-match/1.0.0:
     dev: true
     resolution:
@@ -882,6 +889,7 @@ packages:
 specifiers:
   '@types/mocha': ^5.2.7
   '@types/ping': ^0.2.0
+  async-patterns: ^1.1.0
   callback-patterns: ^1.6.2
   mocha: ^6.1.4
   ping: ^0.2.2
